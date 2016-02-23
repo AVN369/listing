@@ -1,0 +1,26 @@
+[
+  {
+    "label": "20 % off on any product",
+    "image": "http://media.askmebazaar.com/media/catalog/product/a/n/ankita-30-april-50.jpeg",
+    "template": "product-template-1",
+    "items": [
+      {
+        "label": "My awesome ad",
+        "image": "http://media.askmebazaar.com/media/catalog/original/1/-/1-mobiles-912151449645811.jpg",
+        "web-url": "http://www.askmebazaar.com/product.php?product_id=818256&utm_source=web&utm_medium=homepage&utm_campaign=Campaign"
+      }
+    ]
+  },
+  {
+    "label": "20 % off on any product",
+    "image": "http://media.askmebazaar.com/media/catalog/product/a/n/ankita-30-april-50.jpeg",
+    "template": "product-template-1",
+    "items": [
+      {
+        "label": "My awesome ad",
+        "image": "http://media.askmebazaar.com/media/catalog/original/1/-/1-mobiles-912151449645811.jpg",
+        "web-url": "http://www.askmebazaar.com/product.php?product_id=818256&utm_source=web&utm_medium=homepage&utm_campaign=Campaign"
+      }
+    ]
+  }
+]
