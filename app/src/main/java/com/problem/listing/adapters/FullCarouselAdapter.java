@@ -1,4 +1,4 @@
-package com.problem.listing;
+package com.problem.listing.adapters;
 
 import android.content.Context;
 import android.support.v4.view.PagerAdapter;
@@ -7,7 +7,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
+import com.problem.listing.R;
 import com.problem.listing.model.Item;
 import com.squareup.picasso.Picasso;
 
@@ -43,8 +45,10 @@ public class FullCarouselAdapter extends PagerAdapter {
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View view = mLayoutInflater.inflate(R.layout.full_carousel_item, container, false);
         Picasso.with(mContext).load(mItems.get(position).getmImage()).into((ImageView) view.findViewById(R.id.image));
-        container.addView(view);
+        TextView labelTV = (TextView) view.findViewById(R.id.label);
+        labelTV.setText(mItems.get(position).getmLabel());
 
+        container.addView(view);
         return view;
     }
 

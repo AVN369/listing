@@ -1,4 +1,4 @@
-package com.problem.listing;
+package com.problem.listing.adapters;
 
 import android.app.Activity;
 import android.graphics.Paint;
@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.problem.listing.R;
 import com.problem.listing.model.Item;
 import com.problem.listing.utils.Utility;
 import com.squareup.picasso.Picasso;
