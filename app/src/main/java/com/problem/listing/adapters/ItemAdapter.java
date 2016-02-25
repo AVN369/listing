@@ -12,7 +12,9 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.problem.listing.R;
+import com.problem.listing.listeners.OnItemClickListener;
 import com.problem.listing.model.Item;
+import com.problem.listing.model.TEMPLATE_TYPE;
 import com.problem.listing.utils.Utility;
 import com.squareup.picasso.Picasso;
 
@@ -26,12 +28,14 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
     private ArrayList<Item> mItems;
     private Activity mActivity;
     private int mScreenWidth;
+    private OnItemClickListener mOnItemClickListener;
 
-    public ItemAdapter(ArrayList<Item> mItems, Activity activity) {
+    public ItemAdapter(ArrayList<Item> mItems, Activity activity, OnItemClickListener onItemClickListener) {
         this.mItems = mItems;
         this.mActivity = activity;
         Double screenWidth = Utility.getScreenWidth(mActivity);
         mScreenWidth = screenWidth.intValue();
+        this.mOnItemClickListener = onItemClickListener;
     }
 
     @Override
@@ -71,6 +75,20 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
             RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) mCardView.getLayoutParams();
             layoutParams.width = mScreenWidth/3;
             mCardView.setLayoutParams(layoutParams);
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(mOnItemClickListener == null){
+                        return;
+                    }
+
+                    Item item = mItems.get(getAdapterPosition());
+                    mOnItemClickListener.onItemClicked(TEMPLATE_TYPE.ITEM_CAROUSEL,
+                            item.getmLabel(),
+                            item.getmWebUrl());
+                }
+            });
         }
     }
 }

@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.problem.listing.R;
+import com.problem.listing.listeners.OnItemClickListener;
 import com.problem.listing.model.Item;
 import com.problem.listing.model.TEMPLATE_TYPE;
 import com.problem.listing.model.TemplateModel;
@@ -25,10 +26,13 @@ public class TemplatesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
     private ArrayList<TemplateModel> mTemplateModels;
     private Activity mActivity;
+    private OnItemClickListener mOnItemClickListener;
 
-    public TemplatesAdapter(ArrayList<TemplateModel> mTemplateModels, Activity activity) {
+    public TemplatesAdapter(ArrayList<TemplateModel> mTemplateModels, Activity activity,
+                            OnItemClickListener onItemClickListener) {
         this.mTemplateModels = mTemplateModels;
         this.mActivity = activity;
+        this.mOnItemClickListener = onItemClickListener;
     }
 
     @Override
@@ -109,6 +113,19 @@ public class TemplatesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             mImage = (ImageView) itemView.findViewById(R.id.item_image);
             mLabelTV = (TextView) itemView.findViewById(R.id.label);
             mItemLabelTV = (TextView) itemView.findViewById(R.id.item_label);
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(mOnItemClickListener == null){
+                        return;
+                    }
+                    Item item = mTemplateModels.get(getAdapterPosition()).getmItems().get(0);
+                    mOnItemClickListener.onItemClicked(TEMPLATE_TYPE.FULL,
+                            item.getmLabel(),
+                            item.getmWebUrl());
+                }
+            });
         }
     }
 
@@ -133,7 +150,7 @@ public class TemplatesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
         public void initializeAdapter(ArrayList<Item> items){
             if(!isAdapterInitialized) {
-                mItemAdapter = new ItemAdapter(items, mActivity);
+                mItemAdapter = new ItemAdapter(items, mActivity, mOnItemClickListener);
                 mItemsRV.setAdapter(mItemAdapter);
                 isAdapterInitialized = true;
             }
@@ -156,7 +173,7 @@ public class TemplatesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
         public void initializeAdapter(ArrayList<Item> items){
             if(!isAdapterInitialized) {
-                mFullCarouselAdapter = new FullCarouselAdapter(items, mActivity);
+                mFullCarouselAdapter = new FullCarouselAdapter(items, mActivity, mOnItemClickListener);
                 mViewPager.setAdapter(mFullCarouselAdapter);
                 isAdapterInitialized = true;
             }

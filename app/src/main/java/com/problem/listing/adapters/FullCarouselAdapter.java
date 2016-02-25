@@ -10,7 +10,9 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.problem.listing.R;
+import com.problem.listing.listeners.OnItemClickListener;
 import com.problem.listing.model.Item;
+import com.problem.listing.model.TEMPLATE_TYPE;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -23,10 +25,12 @@ public class FullCarouselAdapter extends PagerAdapter {
     private ArrayList<Item> mItems;
     private Context mContext;
     private LayoutInflater mLayoutInflater;
+    private OnItemClickListener mOnItemClickListener;
 
-    public FullCarouselAdapter(ArrayList<Item> mItems, Context mContext) {
+    public FullCarouselAdapter(ArrayList<Item> mItems, Context mContext, OnItemClickListener onItemClickListener) {
         this.mItems = mItems;
         this.mContext = mContext;
+        this.mOnItemClickListener = onItemClickListener;
     }
 
     @Override
@@ -40,13 +44,27 @@ public class FullCarouselAdapter extends PagerAdapter {
     }
 
     @Override
-    public Object instantiateItem(ViewGroup container, int position) {
+    public Object instantiateItem(ViewGroup container, final int position) {
         mLayoutInflater = (LayoutInflater) mContext
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View view = mLayoutInflater.inflate(R.layout.full_carousel_item, container, false);
         Picasso.with(mContext).load(mItems.get(position).getmImage()).into((ImageView) view.findViewById(R.id.image));
         TextView labelTV = (TextView) view.findViewById(R.id.label);
         labelTV.setText(mItems.get(position).getmLabel());
+
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mOnItemClickListener == null) {
+                    return;
+                }
+
+                Item item = mItems.get(position);
+                mOnItemClickListener.onItemClicked(TEMPLATE_TYPE.ITEM_CAROUSEL,
+                        item.getmLabel(),
+                        item.getmWebUrl());
+            }
+        });
 
         container.addView(view);
         return view;
