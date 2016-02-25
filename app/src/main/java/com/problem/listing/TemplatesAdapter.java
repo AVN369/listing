@@ -12,7 +12,6 @@ import android.widget.TextView;
 import com.problem.listing.model.Item;
 import com.problem.listing.model.TEMPLATE_TYPE;
 import com.problem.listing.model.TemplateModel;
-import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -44,7 +43,7 @@ public class TemplatesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             case 2:
                 itemLayoutView = LayoutInflater.from(parent.getContext())
                         .inflate(R.layout.item_template_carousel_item, null);
-                templatesViewHolder = new FullTemplateViewHolder(itemLayoutView);
+                templatesViewHolder = new ItemCarouselTemplateViewHolder(itemLayoutView);
                 break;
 
             case 3:
@@ -65,22 +64,15 @@ public class TemplatesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                 FullTemplateViewHolder fullTemplateViewHolder = (FullTemplateViewHolder)holder;
                 Item item = templateModel.getmItems().get(0);
                 Picasso.with(mActivity).load(item.getmImage())
-                        .into(fullTemplateViewHolder.mImage, new Callback() {
-                            @Override
-                            public void onSuccess() {
-
-                            }
-
-                            @Override
-                            public void onError() {
-
-                            }
-                        });
+                        .into(fullTemplateViewHolder.mImage);
                 fullTemplateViewHolder.mLabelTV.setText(templateModel.getmLabel());
                 fullTemplateViewHolder.mItemLabelTV.setText(item.getmLabel());
                 break;
 
             case ITEM_CAROUSEL:
+                ItemCarouselTemplateViewHolder itemCarouselTemplateViewHolder = (ItemCarouselTemplateViewHolder)holder;
+                itemCarouselTemplateViewHolder.initializeAdapter(templateModel.getmItems());
+                itemCarouselTemplateViewHolder.mLabelTV.setText(templateModel.getmLabel());
                 break;
 
             case FULL_CAROUSEL:
@@ -120,6 +112,8 @@ public class TemplatesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         private RecyclerView mItemsRV;
         private TextView mLabelTV;
         private LinearLayoutManager mLinearLayoutManager;
+        private ItemAdapter mItemAdapter;
+        private boolean isAdapterInitialized = false;
 
         public ItemCarouselTemplateViewHolder(View itemView) {
             super(itemView);
@@ -128,7 +122,14 @@ public class TemplatesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             mItemsRV = (RecyclerView) itemView.findViewById(R.id.carousel);
             mLinearLayoutManager = new LinearLayoutManager(mActivity, LinearLayoutManager.HORIZONTAL, false);
             mItemsRV.setLayoutManager(mLinearLayoutManager);
-//            mItemsRV.setAdapter();
+
+        }
+
+        public void initializeAdapter(ArrayList<Item> items){
+            if(!isAdapterInitialized) {
+                mItemAdapter = new ItemAdapter(items, mActivity);
+                mItemsRV.setAdapter(mItemAdapter);
+            }
         }
     }
 }
