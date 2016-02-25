@@ -1,6 +1,7 @@
 package com.problem.listing;
 
-import android.content.Context;
+import android.app.Activity;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,11 +23,11 @@ import java.util.ArrayList;
 public class TemplatesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private ArrayList<TemplateModel> mTemplateModels;
-    private Context mContext;
+    private Activity mActivity;
 
-    public TemplatesAdapter(ArrayList<TemplateModel> mTemplateModels, Context mContext) {
+    public TemplatesAdapter(ArrayList<TemplateModel> mTemplateModels, Activity activity) {
         this.mTemplateModels = mTemplateModels;
-        this.mContext = mContext;
+        this.mActivity = activity;
     }
 
     @Override
@@ -63,7 +64,7 @@ public class TemplatesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             case FULL:
                 FullTemplateViewHolder fullTemplateViewHolder = (FullTemplateViewHolder)holder;
                 Item item = templateModel.getmItems().get(0);
-                Picasso.with(mContext).load(item.getmImage())
+                Picasso.with(mActivity).load(item.getmImage())
                         .into(fullTemplateViewHolder.mImage, new Callback() {
                             @Override
                             public void onSuccess() {
@@ -97,6 +98,7 @@ public class TemplatesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         return mTemplateModels.get(position).getmTemplateType().getKey();
     }
 
+    //TemplateViewHolder for the template type 1
     public class FullTemplateViewHolder extends RecyclerView.ViewHolder {
 
         private ImageView mImage;
@@ -109,6 +111,24 @@ public class TemplatesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             mImage = (ImageView) itemView.findViewById(R.id.item_image);
             mLabelTV = (TextView) itemView.findViewById(R.id.label);
             mItemLabelTV = (TextView) itemView.findViewById(R.id.item_label);
+        }
+    }
+
+    //TemplateViewHolder for the template type 2 - carousel with small items
+    public class ItemCarouselTemplateViewHolder extends RecyclerView.ViewHolder {
+
+        private RecyclerView mItemsRV;
+        private TextView mLabelTV;
+        private LinearLayoutManager mLinearLayoutManager;
+
+        public ItemCarouselTemplateViewHolder(View itemView) {
+            super(itemView);
+
+            mLabelTV = (TextView) itemView.findViewById(R.id.label);
+            mItemsRV = (RecyclerView) itemView.findViewById(R.id.carousel);
+            mLinearLayoutManager = new LinearLayoutManager(mActivity, LinearLayoutManager.HORIZONTAL, false);
+            mItemsRV.setLayoutManager(mLinearLayoutManager);
+//            mItemsRV.setAdapter();
         }
     }
 }

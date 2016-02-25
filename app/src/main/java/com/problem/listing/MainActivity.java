@@ -41,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        mTemplatesAdapter = new TemplatesAdapter(TemplatesParser.getTemplates(mContext, jsonArray), mContext);
+        mTemplatesAdapter = new TemplatesAdapter(TemplatesParser.getTemplates(mContext, jsonArray), this);
         mTemplatesRV.setLayoutManager(mLinearLayoutManager);
         mTemplatesRV.setAdapter(mTemplatesAdapter);
 //        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);

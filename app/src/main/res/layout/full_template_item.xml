@@ -22,14 +22,16 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
+            android:textColor="@color/white"
             android:textSize="@dimen/full_label_size"/>
 
         <TextView
             android:id="@+id/item_label"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="14dp"
             android:gravity="center"
+            android:textColor="@color/white"
             android:textSize="@dimen/full_label_size"/>
 
 
