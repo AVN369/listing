@@ -9,6 +9,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.Animation;
 
 import com.problem.listing.adapters.TemplatesAdapter;
 import com.problem.listing.listeners.OnItemClickListener;
@@ -33,6 +34,7 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
     private Context mContext;
     private Toolbar mToolbar;
     private Menu mMenu;
+    private Animation.AnimationListener mTranslateAnimationListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,7 +57,24 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
         mTemplatesRV.setLayoutManager(mLinearLayoutManager);
         mTemplatesRV.setAdapter(mTemplatesAdapter);
 
-        mWebviewHandler = new WebviewHandler(mWebviewContainer, mContext);
+        mTranslateAnimationListener = new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                onPrepareOptionsMenu(mMenu);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        };
+        mWebviewHandler = new WebviewHandler(mWebviewContainer, mContext, mTranslateAnimationListener);
+
     }
 
     @Override
@@ -81,7 +100,6 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_close) {
             mWebviewHandler.hide();
-            onPrepareOptionsMenu(mMenu);
             mToolbar.setTitle(R.string.app_name);
             return true;
         }
@@ -93,7 +111,6 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
     public void onBackPressed() {
         if(mWebviewHandler.isVisible()){
             mWebviewHandler.hide();
-            onPrepareOptionsMenu(mMenu);
             mToolbar.setTitle(R.string.app_name);
             return;
         }
@@ -103,7 +120,6 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
     @Override
     public void onItemClicked(TEMPLATE_TYPE templateType, String title, String uri) {
         mWebviewHandler.loadUrl(uri);
-        onPrepareOptionsMenu(mMenu);
         mToolbar.setTitle(title);
     }
 }
