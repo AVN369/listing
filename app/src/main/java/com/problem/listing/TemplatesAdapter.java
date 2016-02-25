@@ -1,6 +1,7 @@
 package com.problem.listing;
 
 import android.app.Activity;
+import android.support.v4.view.ViewPager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -49,7 +50,7 @@ public class TemplatesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             case 3:
                 itemLayoutView = LayoutInflater.from(parent.getContext())
                         .inflate(R.layout.full_carousel_template_item, null);
-                templatesViewHolder = new FullTemplateViewHolder(itemLayoutView);
+                templatesViewHolder = new FullCarouselTemplateViewHolder(itemLayoutView);
                 break;
         }
         return templatesViewHolder;
@@ -76,6 +77,10 @@ public class TemplatesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                 break;
 
             case FULL_CAROUSEL:
+                FullCarouselTemplateViewHolder fullCarouselTemplateViewHolder =
+                        (FullCarouselTemplateViewHolder)holder;
+                fullCarouselTemplateViewHolder.initializeAdapter(templateModel.getmItems());
+//                fullCarouselTemplateViewHolder.mLabelTV.setText(templateModel.getmLabel());
                 break;
         }
     }
@@ -129,6 +134,28 @@ public class TemplatesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             if(!isAdapterInitialized) {
                 mItemAdapter = new ItemAdapter(items, mActivity);
                 mItemsRV.setAdapter(mItemAdapter);
+                isAdapterInitialized = true;
+            }
+        }
+    }
+
+    //TemplateViewHolder for the template type 3
+    public class FullCarouselTemplateViewHolder extends RecyclerView.ViewHolder {
+
+        private FullCarouselAdapter mFullCarouselAdapter;
+        private ViewPager mViewPager;
+        private boolean isAdapterInitialized = false;
+
+        public FullCarouselTemplateViewHolder(View itemView) {
+            super(itemView);
+            mViewPager = (ViewPager) itemView.findViewById(R.id.carousel);
+        }
+
+        public void initializeAdapter(ArrayList<Item> items){
+            if(!isAdapterInitialized) {
+                mFullCarouselAdapter = new FullCarouselAdapter(items, mActivity);
+                mViewPager.setAdapter(mFullCarouselAdapter);
+                isAdapterInitialized = true;
             }
         }
     }

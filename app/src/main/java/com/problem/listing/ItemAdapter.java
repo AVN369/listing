@@ -1,12 +1,15 @@
 package com.problem.listing;
 
 import android.app.Activity;
+import android.graphics.Paint;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.problem.listing.model.Item;
 import com.problem.listing.utils.Utility;
@@ -42,6 +45,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
     public void onBindViewHolder(ItemViewHolder holder, int position) {
         Item item = mItems.get(position);
         Picasso.with(mActivity).load(item.getmImage()).into(holder.mImageIV);
+        holder.mLabelTV.setText(item.getmLabel());
     }
 
     @Override
@@ -52,13 +56,20 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
     public class ItemViewHolder extends RecyclerView.ViewHolder {
 
         private ImageView mImageIV;
+        private CardView mCardView;
+        private TextView mLabelTV, mOldPriceTV, mNewPriceTV;
 
         public ItemViewHolder(View itemView) {
             super(itemView);
+            mCardView = (CardView) itemView.findViewById(R.id.item_container);
             mImageIV = (ImageView) itemView.findViewById(R.id.image);
-            RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) mImageIV.getLayoutParams();
+            mLabelTV = (TextView) itemView.findViewById(R.id.label);
+            mOldPriceTV = (TextView) itemView.findViewById(R.id.old_price_tv);
+            mOldPriceTV.setPaintFlags(mOldPriceTV.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+            mNewPriceTV = (TextView) itemView.findViewById(R.id.new_price_tv);
+            RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) mCardView.getLayoutParams();
             layoutParams.width = mScreenWidth/3;
-            mImageIV.setLayoutParams(layoutParams);
+            mCardView.setLayoutParams(layoutParams);
         }
     }
 }
