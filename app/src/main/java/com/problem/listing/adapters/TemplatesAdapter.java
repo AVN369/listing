@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.problem.listing.R;
@@ -121,9 +122,11 @@ public class TemplatesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                         return;
                     }
                     Item item = mTemplateModels.get(getAdapterPosition()).getmItems().get(0);
-                    mOnItemClickListener.onItemClicked(TEMPLATE_TYPE.FULL,
-                            item.getmLabel(),
-                            item.getmWebUrl());
+                    if(item.getmWebUrl() != null && !"".equals(item.getmWebUrl())) {
+                        mOnItemClickListener.onItemClicked(TEMPLATE_TYPE.FULL,
+                                item.getmLabel(),
+                                item.getmWebUrl());
+                    }
                 }
             });
         }
@@ -164,17 +167,52 @@ public class TemplatesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         private ViewPager mViewPager;
         private TextView mLabelTV;
         private boolean isAdapterInitialized = false;
+        private LinearLayout mPVIndicatorContainer;
+        private ArrayList<View> mIndicatorViews;
+        private int mSelectedIndex = 0;
 
         public FullCarouselTemplateViewHolder(View itemView) {
             super(itemView);
             mViewPager = (ViewPager) itemView.findViewById(R.id.carousel);
             mLabelTV = (TextView) itemView.findViewById(R.id.label);
+            mPVIndicatorContainer = (LinearLayout) itemView.findViewById(R.id.pv_indicator_container);
         }
 
         public void initializeAdapter(ArrayList<Item> items){
             if(!isAdapterInitialized) {
                 mFullCarouselAdapter = new FullCarouselAdapter(items, mActivity, mOnItemClickListener);
                 mViewPager.setAdapter(mFullCarouselAdapter);
+
+                int size = items.size();
+                mIndicatorViews = new ArrayList<>();
+                LayoutInflater layoutInflater = mActivity.getLayoutInflater();
+                for(int i = 0; i < size; i++){
+                    View view = layoutInflater.inflate(R.layout.pager_indicator_item, mPVIndicatorContainer, false);
+                    mIndicatorViews.add(view.findViewById(R.id.pager_indicator_circle_full));
+                    mPVIndicatorContainer.addView(view);
+                }
+                mIndicatorViews.get(0).setVisibility(View.VISIBLE);
+                mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+                    @Override
+                    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+                    }
+
+                    @Override
+                    public void onPageSelected(int position) {
+                        mIndicatorViews.get(position).setVisibility(View.VISIBLE);
+                        if(mSelectedIndex != -1) {
+                            mIndicatorViews.get(mSelectedIndex).setVisibility(View.GONE);
+                        }
+                        mSelectedIndex = position;
+                    }
+
+                    @Override
+                    public void onPageScrollStateChanged(int state) {
+
+                    }
+                });
+
                 isAdapterInitialized = true;
             }
         }

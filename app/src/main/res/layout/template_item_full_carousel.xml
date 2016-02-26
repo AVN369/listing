@@ -15,4 +15,21 @@
         android:layout_height="@dimen/item_height"
         android:layout_below="@+id/label"/>
 
+    <LinearLayout
+        android:id="@+id/pv_indicator"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:gravity="center"
+        android:layout_alignBottom="@+id/carousel"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:id="@+id/pv_indicator_container"
+            android:layout_width="100dp"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:orientation="horizontal" />
+
+    </LinearLayout>
+
 </RelativeLayout>

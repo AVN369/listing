@@ -17,4 +17,26 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 
+    <RelativeLayout
+        android:id="@+id/loading_container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true">
+
+        <ProgressBar
+            android:id="@+id/progress_bar"
+            android:layout_width="64dp"
+            android:layout_height="64dp" />
+
+        <TextView
+            android:id="@+id/loading_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/loading"
+            android:layout_below="@+id/progress_bar"/>
+
+
+
+    </RelativeLayout>
+
 </RelativeLayout>

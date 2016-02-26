@@ -84,9 +84,11 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
                     }
 
                     Item item = mItems.get(getAdapterPosition());
-                    mOnItemClickListener.onItemClicked(TEMPLATE_TYPE.ITEM_CAROUSEL,
-                            item.getmLabel(),
-                            item.getmWebUrl());
+                    if(item.getmWebUrl() != null && !"".equals(item.getmWebUrl())) {
+                        mOnItemClickListener.onItemClicked(TEMPLATE_TYPE.ITEM_CAROUSEL,
+                                item.getmLabel(),
+                                item.getmWebUrl());
+                    }
                 }
             });
         }

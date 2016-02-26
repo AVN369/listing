@@ -60,9 +60,11 @@ public class FullCarouselAdapter extends PagerAdapter {
                 }
 
                 Item item = mItems.get(position);
-                mOnItemClickListener.onItemClicked(TEMPLATE_TYPE.ITEM_CAROUSEL,
-                        item.getmLabel(),
-                        item.getmWebUrl());
+                if(item.getmWebUrl() != null && !"".equals(item.getmWebUrl())) {
+                    mOnItemClickListener.onItemClicked(TEMPLATE_TYPE.ITEM_CAROUSEL,
+                            item.getmLabel(),
+                            item.getmWebUrl());
+                }
             }
         });
 
