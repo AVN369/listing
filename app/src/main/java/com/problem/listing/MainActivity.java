@@ -1,6 +1,9 @@
 package com.problem.listing;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -15,7 +18,6 @@ import com.problem.listing.adapters.TemplatesAdapter;
 import com.problem.listing.listeners.OnItemClickListener;
 import com.problem.listing.model.TEMPLATE_TYPE;
 import com.problem.listing.model.TemplatesParser;
-import com.problem.listing.utils.Utility;
 import com.problem.listing.utils.WebviewHandler;
 
 import org.json.JSONArray;
@@ -28,6 +30,8 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
 
     @Bind(R.id.templates_rv) RecyclerView mTemplatesRV;
     @Bind(R.id.webview_container) View mWebviewContainer;
+    @Bind(R.id.loading_container) View mLoadingCOntainer;
+    @Bind(R.id.tap_to_retry_container) View mTapToRetryContainer;
     private WebviewHandler mWebviewHandler;
     private LinearLayoutManager mLinearLayoutManager;
     private TemplatesAdapter mTemplatesAdapter;
@@ -35,6 +39,7 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
     private Toolbar mToolbar;
     private Menu mMenu;
     private Animation.AnimationListener mTranslateAnimationListener;
+    private MyReceiver mMyReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,16 +51,7 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
         setSupportActionBar(mToolbar);
 
         mLinearLayoutManager = new LinearLayoutManager(mContext);
-        JSONArray jsonArray = null;
-        try {
-            jsonArray = new JSONArray(Utility.getJSONFromFile(mContext));
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        mTemplatesAdapter = new TemplatesAdapter(TemplatesParser.getTemplates(mContext, jsonArray),
-                this, this);
         mTemplatesRV.setLayoutManager(mLinearLayoutManager);
-        mTemplatesRV.setAdapter(mTemplatesAdapter);
 
         mTranslateAnimationListener = new Animation.AnimationListener() {
             @Override
@@ -74,7 +70,20 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
             }
         };
         mWebviewHandler = new WebviewHandler(mWebviewContainer, mContext, mTranslateAnimationListener);
+        loadData();
+        mTapToRetryContainer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                loadData();
+            }
+        });
+    }
 
+    private void loadData(){
+        //Need to pass the server API url here
+        mLoadingCOntainer.setVisibility(View.VISIBLE);
+        mTapToRetryContainer.setVisibility(View.GONE);
+        DealsFetcherService.startActionGetDealData(mContext, null);
     }
 
     @Override
@@ -121,5 +130,52 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
     public void onItemClicked(TEMPLATE_TYPE templateType, String title, String uri) {
         mWebviewHandler.loadUrl(uri);
         mToolbar.setTitle(title);
+    }
+
+    @Override
+    protected void onStart() {
+
+        super.onStart();
+
+        if(mMyReceiver == null) {
+            mMyReceiver = new MyReceiver();
+        }
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(DealsFetcherService.ACTION_DEAL_DATA);
+        registerReceiver(mMyReceiver, intentFilter);
+    }
+
+    @Override
+    protected void onStop() {
+        unregisterReceiver(mMyReceiver);
+        super.onStop();
+    }
+
+    public class MyReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
+            if(!intent.getBooleanExtra("status", false)){
+                mTapToRetryContainer.setVisibility(View.VISIBLE);
+                mLoadingCOntainer.setVisibility(View.GONE);
+                return;
+            }
+
+            if(intent.hasExtra("data")) {
+                String data = intent.getStringExtra("data");
+                JSONArray jsonArray = null;
+                try {
+                    jsonArray = new JSONArray(data);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                mTemplatesAdapter = new TemplatesAdapter(TemplatesParser.getTemplates(mContext, jsonArray),
+                        MainActivity.this, MainActivity.this);
+                mTemplatesRV.setAdapter(mTemplatesAdapter);
+                mLoadingCOntainer.setVisibility(View.GONE);
+            }
+        }
+
     }
 }
