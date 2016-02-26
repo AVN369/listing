@@ -1,6 +1,7 @@
 package com.problem.listing.adapters;
 
 import android.content.Context;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.PagerAdapter;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +14,7 @@ import com.problem.listing.R;
 import com.problem.listing.listeners.OnItemClickListener;
 import com.problem.listing.model.Item;
 import com.problem.listing.model.TEMPLATE_TYPE;
+import com.problem.listing.utils.GradientTransformation;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -26,11 +28,18 @@ public class FullCarouselAdapter extends PagerAdapter {
     private Context mContext;
     private LayoutInflater mLayoutInflater;
     private OnItemClickListener mOnItemClickListener;
+    private int[] colors;
+    private GradientTransformation mGradientTransformation;
 
     public FullCarouselAdapter(ArrayList<Item> mItems, Context mContext, OnItemClickListener onItemClickListener) {
         this.mItems = mItems;
         this.mContext = mContext;
         this.mOnItemClickListener = onItemClickListener;
+        colors = new int[3];
+        colors[0] = ActivityCompat.getColor(mContext, R.color.scrim_color_top);
+        colors[1] = ActivityCompat.getColor(mContext, R.color.scrim_color_middle);
+        colors[2] = ActivityCompat.getColor(mContext, R.color.scrim_color_bottom);
+        mGradientTransformation = new GradientTransformation(colors);
     }
 
     @Override
@@ -48,7 +57,9 @@ public class FullCarouselAdapter extends PagerAdapter {
         mLayoutInflater = (LayoutInflater) mContext
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View view = mLayoutInflater.inflate(R.layout.full_carousel_item, container, false);
-        Picasso.with(mContext).load(mItems.get(position).getmImage()).into((ImageView) view.findViewById(R.id.image));
+        Picasso.with(mContext).load(mItems.get(position).getmImage())
+                .transform(mGradientTransformation)
+                .into((ImageView) view.findViewById(R.id.image));
         TextView labelTV = (TextView) view.findViewById(R.id.label);
         labelTV.setText(mItems.get(position).getmLabel());
 

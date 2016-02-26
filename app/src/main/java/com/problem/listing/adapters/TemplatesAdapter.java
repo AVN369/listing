@@ -1,6 +1,7 @@
 package com.problem.listing.adapters;
 
 import android.app.Activity;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -16,6 +17,7 @@ import com.problem.listing.listeners.OnItemClickListener;
 import com.problem.listing.model.Item;
 import com.problem.listing.model.TEMPLATE_TYPE;
 import com.problem.listing.model.TemplateModel;
+import com.problem.listing.utils.GradientTransformation;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -28,12 +30,19 @@ public class TemplatesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     private ArrayList<TemplateModel> mTemplateModels;
     private Activity mActivity;
     private OnItemClickListener mOnItemClickListener;
+    private int[] colors;
+    private GradientTransformation mGradientTransformation;
 
     public TemplatesAdapter(ArrayList<TemplateModel> mTemplateModels, Activity activity,
                             OnItemClickListener onItemClickListener) {
         this.mTemplateModels = mTemplateModels;
         this.mActivity = activity;
         this.mOnItemClickListener = onItemClickListener;
+        colors = new int[3];
+        colors[0] = ActivityCompat.getColor(mActivity, R.color.scrim_color_top);
+        colors[1] = ActivityCompat.getColor(mActivity, R.color.scrim_color_middle);
+        colors[2] = ActivityCompat.getColor(mActivity, R.color.scrim_color_bottom);
+        mGradientTransformation = new GradientTransformation(colors);
     }
 
     @Override
@@ -71,6 +80,7 @@ public class TemplatesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                 FullTemplateViewHolder fullTemplateViewHolder = (FullTemplateViewHolder)holder;
                 Item item = templateModel.getmItems().get(0);
                 Picasso.with(mActivity).load(item.getmImage())
+                        .transform(mGradientTransformation)
                         .into(fullTemplateViewHolder.mImage);
                 fullTemplateViewHolder.mLabelTV.setText(templateModel.getmLabel());
                 fullTemplateViewHolder.mItemLabelTV.setText(item.getmLabel());
